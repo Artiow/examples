@@ -1,5 +1,13 @@
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
+# mvnw
+/**/.mvn
+/**/mvnw
+/**/mvnw.cmd
+
+# Build
+/**/target
+
 # Intellij IDEA
 /**/*.iml
 .idea/
