@@ -1,8 +1,15 @@
 package artiow.examples.ibmmq;
 
+import java.util.Optional;
+import java.util.Set;
+import java.util.UUID;
+import java.util.function.Consumer;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jms.core.JmsTemplate;
+import org.springframework.messaging.Message;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.testcontainers.containers.GenericContainer;
@@ -34,5 +41,14 @@ abstract class AbstractIntegrationTests {
 
     private static String getConnectionName() {
         return String.format("localhost(%d)", CONTAINER.getMappedPort(1414));
+    }
+
+
+    public static Set<UUID> generateUuidSet(int limit, Consumer<UUID> action) {
+        return Stream.generate(UUID::randomUUID).limit(limit).peek(action).collect(Collectors.toSet());
+    }
+
+    public static boolean isUuidInSet(Message<UUID> msg, Set<UUID> setToTest) {
+        return Optional.ofNullable(msg).map(Message::getPayload).filter(setToTest::contains).isPresent();
     }
 }

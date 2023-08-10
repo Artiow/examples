@@ -13,6 +13,7 @@ public class DualListenerService {
     private static final String ACCEPTED = " ";
     private static final String REJECTED = "×";
 
+
     @JmsListener(
         destination = "DEV.QUEUE.2",
         containerFactory = "suppressedJmsListenerContainerFactory")

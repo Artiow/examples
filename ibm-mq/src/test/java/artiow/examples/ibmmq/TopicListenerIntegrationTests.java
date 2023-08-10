@@ -1,5 +1,6 @@
 package artiow.examples.ibmmq;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentMatchers;
 import org.mockito.Mockito;
@@ -11,30 +12,56 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 @SpringBootTest
 class TopicListenerIntegrationTests extends AbstractIntegrationTests {
 
+    // destination topic name
+    static final String DESTINATION = "DEV.BASE.TOPIC";
+    // verification timeout (ms)
+    static final int TIMEOUT = 2000;
+    // number of messages
+    static final int N = 100;
+
     @SpyBean
-    TopicListenerService topicListenerService;
+    TopicListenerService serviceToTest;
+
+
+    @BeforeEach
+    void beforeEach() {
+        jms.setPubSubDomain(true); // topic
+    }
 
 
     @Test
     void test() {
-        // destination topic name
-        final var destination = "DEV.BASE.TOPIC";
-        // verification timeout (ms)
-        final var timeout = 1000;
-        // number of messages
-        final var n = 100;
+        final var sentMsgSet = generateUuidSet(N, uuid -> jms.convertAndSend(DESTINATION, uuid));
 
-        jms.setPubSubDomain(true); // topic
-        final var sentMsgSet = MessageTestUtils.generate(n, uuid -> jms.convertAndSend(destination, uuid));
+        // annotation-driven style test
+        Mockito
+            .verify(serviceToTest, Mockito.timeout(TIMEOUT).times(N))
+            .listenTopic_annotationDrivenConsumer1(
+                ArgumentMatchers.argThat(msg -> isUuidInSet(msg, sentMsgSet)));
+        Mockito
+            .verify(serviceToTest, Mockito.timeout(TIMEOUT).times(N))
+            .listenTopic_annotationDrivenConsumer2(
+                ArgumentMatchers.argThat(msg -> isUuidInSet(msg, sentMsgSet)));
+        Mockito
+            .verify(serviceToTest, Mockito.timeout(TIMEOUT).times(N))
+            .listenTopic_annotationDrivenConsumer3(
+                ArgumentMatchers.argThat(msg -> isUuidInSet(msg, sentMsgSet)));
 
+        // programmatic style test
         Mockito
-            .verify(topicListenerService, Mockito.timeout(timeout).times(n))
-            .listenTopic_consumer1(ArgumentMatchers.argThat(msg -> MessageTestUtils.match(msg, sentMsgSet)));
+            .verify(serviceToTest, Mockito.timeout(TIMEOUT).times(N))
+            .listenTopic_programmaticCommonConsumer(
+                ArgumentMatchers.eq(1),
+                ArgumentMatchers.argThat(msg -> isUuidInSet(msg, sentMsgSet)));
         Mockito
-            .verify(topicListenerService, Mockito.timeout(timeout).times(n))
-            .listenTopic_consumer2(ArgumentMatchers.argThat(msg -> MessageTestUtils.match(msg, sentMsgSet)));
+            .verify(serviceToTest, Mockito.timeout(TIMEOUT).times(N))
+            .listenTopic_programmaticCommonConsumer(
+                ArgumentMatchers.eq(2),
+                ArgumentMatchers.argThat(msg -> isUuidInSet(msg, sentMsgSet)));
         Mockito
-            .verify(topicListenerService, Mockito.timeout(timeout).times(n))
-            .listenTopic_consumer3(ArgumentMatchers.argThat(msg -> MessageTestUtils.match(msg, sentMsgSet)));
+            .verify(serviceToTest, Mockito.timeout(TIMEOUT).times(N))
+            .listenTopic_programmaticCommonConsumer(
+                ArgumentMatchers.eq(3),
+                ArgumentMatchers.argThat(msg -> isUuidInSet(msg, sentMsgSet)));
     }
 }

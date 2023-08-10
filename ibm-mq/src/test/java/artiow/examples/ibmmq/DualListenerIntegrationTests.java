@@ -11,22 +11,24 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 @SpringBootTest
 class DualListenerIntegrationTests extends AbstractIntegrationTests {
 
+    // destination topic name
+    static final String DESTINATION = "DEV.QUEUE.2";
+    // verification timeout (ms)
+    static final int TIMEOUT = 2000;
+    // number of messages
+    static final int N = 100;
+
+
     @SpyBean
-    DualListenerService dualListenerService;
+    DualListenerService serviceToTest;
+
 
     @Test
     void test() {
-        // destination queue name
-        final var destination = "DEV.QUEUE.2";
-        // verification timeout (ms)
-        final var timeout = 1000;
-        // number of messages
-        final var n = 100;
-
-        final var sentMsgSet = MessageTestUtils.generate(n, uuid -> jms.convertAndSend(destination, uuid));
+        final var sentMsgSet = generateUuidSet(N, uuid -> jms.convertAndSend(DESTINATION, uuid));
 
         Mockito
-            .verify(dualListenerService, Mockito.timeout(timeout).times(n))
-            .listenQueue_andAccept(ArgumentMatchers.argThat(msg -> MessageTestUtils.match(msg, sentMsgSet)));
+            .verify(serviceToTest, Mockito.timeout(TIMEOUT).times(N))
+            .listenQueue_andAccept(ArgumentMatchers.argThat(msg -> isUuidInSet(msg, sentMsgSet)));
     }
 }
