@@ -5,7 +5,7 @@ COPY src      /root/src
 COPY pom.xml  /root
 COPY .mvn /bin/.mvn
 COPY mvnw /bin
-RUN mvnw -f ~/pom.xml -Dtest=!IbmMqApplicationIntegrationTests package
+RUN mvnw -f ~/pom.xml -Dtest=!*IntegrationTests package
 
 # Package stage
 FROM amazoncorretto:17-alpine
