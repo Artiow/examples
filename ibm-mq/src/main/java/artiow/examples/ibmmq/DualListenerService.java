@@ -6,7 +6,7 @@ import org.springframework.jms.annotation.JmsListener;
 import org.springframework.messaging.Message;
 import org.springframework.stereotype.Service;
 
-@Slf4j(topic = "DEV.QUEUE.2")
+@Slf4j
 @Service
 public class DualListenerService {
 
@@ -15,6 +15,7 @@ public class DualListenerService {
 
 
     @JmsListener(
+        id = "accepting-dev.queue.2-listener",
         destination = "DEV.QUEUE.2",
         containerFactory = "suppressedJmsListenerContainerFactory")
     public void listenQueue_andAccept(Message<UUID> msg) {
@@ -22,6 +23,7 @@ public class DualListenerService {
     }
 
     @JmsListener(
+        id = "rejecting-dev.queue.2-listener",
         destination = "DEV.QUEUE.2",
         containerFactory = "suppressedJmsListenerContainerFactory")
     public void listenQueue_andReject(Message<UUID> msg) {

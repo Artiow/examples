@@ -1,0 +1,3 @@
+logging.level:
+  org.springframework.jms.connection.CachingConnectionFactory: OFF
+  org.springframework.jms.listener.DefaultMessageListenerContainer: OFF

@@ -7,14 +7,10 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.jms.annotation.EnableJms;
 import org.springframework.jms.config.DefaultJmsListenerContainerFactory;
 import org.springframework.jms.config.JmsListenerContainerFactory;
-import org.springframework.util.ErrorHandler;
 
 @EnableJms
 @Configuration
 public class JmsConfig {
-
-    private static final ErrorHandler NO_OP_HANDLER = t -> { };
-
 
     @Bean
     public JmsListenerContainerFactory<?> topicJmsListenerContainerFactory(
@@ -32,7 +28,6 @@ public class JmsConfig {
         ConnectionFactory connectionFactory) {
         final var factory = new DefaultJmsListenerContainerFactory();
         configurer.configure(factory, connectionFactory);
-        factory.setErrorHandler(NO_OP_HANDLER);
         return factory;
     }
 }

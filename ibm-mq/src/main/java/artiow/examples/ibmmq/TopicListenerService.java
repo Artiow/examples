@@ -16,7 +16,7 @@ import org.springframework.lang.NonNull;
 import org.springframework.messaging.Message;
 import org.springframework.stereotype.Service;
 
-@Slf4j(topic = "DEV.BASE.TOPIC")
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class TopicListenerService implements JmsListenerConfigurer {
@@ -27,6 +27,7 @@ public class TopicListenerService implements JmsListenerConfigurer {
 
     // annotation-driven style
     @JmsListener(
+        id = "annotation-driven-dev.base.topic-listener-1",
         destination = "DEV.BASE.TOPIC",
         containerFactory = "topicJmsListenerContainerFactory")
     public void listenTopic_annotationDrivenConsumer1(Message<UUID> msg) {
@@ -35,6 +36,7 @@ public class TopicListenerService implements JmsListenerConfigurer {
 
     // annotation-driven style
     @JmsListener(
+        id = "annotation-driven-dev.base.topic-listener-2",
         destination = "DEV.BASE.TOPIC",
         containerFactory = "topicJmsListenerContainerFactory")
     public void listenTopic_annotationDrivenConsumer2(Message<UUID> msg) {
@@ -43,6 +45,7 @@ public class TopicListenerService implements JmsListenerConfigurer {
 
     // annotation-driven style
     @JmsListener(
+        id = "annotation-driven-dev.base.topic-listener-3",
         destination = "DEV.BASE.TOPIC",
         containerFactory = "topicJmsListenerContainerFactory")
     public void listenTopic_annotationDrivenConsumer3(Message<UUID> msg) {
@@ -52,7 +55,7 @@ public class TopicListenerService implements JmsListenerConfigurer {
 
     // programmatic style
     public void listenTopic_programmaticCommonConsumer(int consumerId, Message<UUID> msg) {
-        log.info("[programmatic-consumer-{}]: {}", consumerId, msg.getPayload());
+        log.info("[     programmatic-consumer-{}]: {}", consumerId, msg.getPayload());
     }
 
 
@@ -62,7 +65,7 @@ public class TopicListenerService implements JmsListenerConfigurer {
             .range(1, 4)
             .mapToObj(id -> {
                 final var endpoint = new SimpleJmsListenerEndpoint();
-                endpoint.setId("programmatic-endpoint-" + id);
+                endpoint.setId("programmatic-dev.base.topic-listener-" + id);
                 endpoint.setDestination("DEV.BASE.TOPIC");
                 endpoint.setMessageListener(msg -> listenTopic_programmaticCommonConsumer(id, adaptJmsMessage(msg, UUID.class)));
                 return endpoint;
