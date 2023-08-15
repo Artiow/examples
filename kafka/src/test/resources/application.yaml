@@ -1,0 +1,5 @@
+spring:
+  application.name: kafka-client
+  cloud.zookeeper:
+    connection-timeout: 10ms
+    max-retries: 0
