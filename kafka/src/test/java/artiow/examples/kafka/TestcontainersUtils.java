@@ -1,4 +1,4 @@
-package artiow.example.kafka;
+package artiow.examples.kafka;
 
 import java.util.function.Consumer;
 import lombok.experimental.UtilityClass;

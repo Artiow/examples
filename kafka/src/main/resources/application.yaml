@@ -1,2 +1,5 @@
 spring:
-  application.name: kafka-client
+  application.name: kafka-demo-application
+  kafka.producer:
+    key-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+    value-serializer: org.springframework.kafka.support.serializer.JsonSerializer

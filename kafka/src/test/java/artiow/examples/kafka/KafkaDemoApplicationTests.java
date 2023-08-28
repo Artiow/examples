@@ -1,4 +1,4 @@
-package artiow.example.kafka;
+package artiow.examples.kafka;
 
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Assertions;
@@ -18,8 +18,10 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 
 @Slf4j
 @Testcontainers
-@SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
-class KafkaClientTests {
+@SpringBootTest(
+    classes = KafkaDemoApplicationTestsConfig.class,
+    webEnvironment = WebEnvironment.RANDOM_PORT)
+class KafkaDemoApplicationTests {
 
     static final Network NETWORK = Network.newNetwork();
 

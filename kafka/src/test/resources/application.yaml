@@ -1,5 +1,8 @@
 spring:
-  application.name: kafka-client
+  application.name: kafka-demo-application
   cloud.zookeeper:
     connection-timeout: 10ms
     max-retries: 0
+  kafka.producer:
+    key-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+    value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
