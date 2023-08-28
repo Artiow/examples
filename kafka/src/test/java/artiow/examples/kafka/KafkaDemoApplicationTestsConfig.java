@@ -7,9 +7,15 @@ import org.springframework.context.annotation.FilterType;
 
 @Configuration
 @EnableAutoConfiguration
-@ComponentScan(excludeFilters = @ComponentScan.Filter(
-    type = FilterType.ASSIGNABLE_TYPE,
-    classes = {KafkaDemoApplication.class, KafkaConfig.class}))
+@ComponentScan(
+    excludeFilters = @ComponentScan.Filter(
+        type = FilterType.ASSIGNABLE_TYPE,
+        classes = {
+            // overriding Spring Boot configuration
+            KafkaDemoApplication.class,
+            // excluding specific configs
+            KafkaConfig.class
+        }))
 public class KafkaDemoApplicationTestsConfig {
 
 }

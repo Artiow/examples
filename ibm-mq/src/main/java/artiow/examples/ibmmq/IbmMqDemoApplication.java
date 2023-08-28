@@ -4,9 +4,9 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class IbmMqClient {
+public class IbmMqDemoApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(IbmMqClient.class, args);
+        SpringApplication.run(IbmMqDemoApplication.class, args);
     }
 }

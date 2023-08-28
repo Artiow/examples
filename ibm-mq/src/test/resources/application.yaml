@@ -1,3 +1,5 @@
+spring:
+  application.name: ibm-mq-demo-application
 logging.level:
   org.springframework.jms.connection.CachingConnectionFactory: OFF
   org.springframework.jms.listener.DefaultMessageListenerContainer: OFF

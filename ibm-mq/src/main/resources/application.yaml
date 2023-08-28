@@ -1,2 +1,2 @@
 spring:
-  application.name: ibm-mq-client
+  application.name: ibm-mq-demo-application

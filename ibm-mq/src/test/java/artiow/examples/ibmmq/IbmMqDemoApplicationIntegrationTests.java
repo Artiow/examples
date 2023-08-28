@@ -8,7 +8,7 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 
 @Testcontainers
 @SpringBootTest
-class IbmMqClientIntegrationTests extends AbstractIntegrationTests {
+class IbmMqDemoApplicationIntegrationTests extends AbstractIntegrationTests {
 
     @Test
     void test() {
