@@ -1,6 +1,10 @@
 package artiow.examples.kafka;
 
 import artiow.examples.kafka.dto.DemoData;
+import artiow.examples.kafka.util.ContainerEvent;
+import artiow.examples.kafka.util.InterceptableContainer;
+import artiow.examples.kafka.util.TestcontainersUtils;
+import java.util.Objects;
 import java.util.UUID;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Assertions;
@@ -41,15 +45,16 @@ class KafkaDemoApplicationTests {
 
     @SuppressWarnings("resource")
     @Container
-    static final InspectedContainer<?> KAFKA =
-        new InspectedContainer<>("bitnami/kafka")
+    static final InterceptableContainer<?> KAFKA =
+        new InterceptableContainer<>("bitnami/kafka")
             .dependsOn(ZOOKEEPER)
             .withNetwork(NETWORK)
             .withNetworkAliases("kafka")
             .withExposedPorts(9092)
             .withCreateContainerCmdModifier(cmd -> cmd.withEntrypoint("sh"))
             .withCommand("-c", "while [ ! -f /opt/entrypoint.sh ]; do sleep 0.1; done; /opt/entrypoint.sh")
-            .withStartingInspection((container, containerInfo) -> {
+            .withInterceptorOn(ContainerEvent.STARTING, (container, containerInfo) -> {
+                Objects.requireNonNull(containerInfo, "container info is null");
                 final String internal = containerInfo.getConfig().getHostName() + ":" + "49092";
                 final String external = container.getHost() + ":" + container.getMappedPort(9092);
                 final String starterScript = "#!/bin/bash\n"
@@ -79,12 +84,12 @@ class KafkaDemoApplicationTests {
 
     @DynamicPropertySource
     static void registerProperties(DynamicPropertyRegistry registry) {
-        registry.add("spring.cloud.zookeeper.connect-string", () -> getSocketAddressFor(ZOOKEEPER, 2181));
-        registry.add("spring.kafka.bootstrap-servers", () -> getSocketAddressFor(KAFKA, 9092));
-    }
-
-    static String getSocketAddressFor(GenericContainer<?> container, int port) {
-        return String.format("localhost:%d", container.getMappedPort(port));
+        registry.add(
+            "spring.cloud.zookeeper.connect-string",
+            TestcontainersUtils.newSocketSupplier(ZOOKEEPER, 2181));
+        registry.add(
+            "spring.kafka.bootstrap-servers",
+            TestcontainersUtils.newSocketSupplier(KAFKA, 9092));
     }
 
 
