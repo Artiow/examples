@@ -32,7 +32,7 @@ public class ClockDemoProducer {
             .thenAccept(sendResult -> producedUuids.add(sendResult.getProducerRecord().key()));
     }
 
-    @KafkaListener(groupId = "kafka-demo-group", topics = {"kafka-topic-example"})
+    @KafkaListener(topics = {"kafka-topic-example"})
     public void consumeTick(ConsumerRecord<UUID, DemoData> rec) {
         final var uuid = Objects.requireNonNull(rec.key(), "Key must be non null");
         final var data = Objects.requireNonNull(rec.value(), "Value must be non null");
