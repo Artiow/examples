@@ -17,7 +17,6 @@ import org.springframework.kafka.core.KafkaTemplate;
             // overriding Spring Boot configuration
             KafkaDemoApplication.class,
             // excluding specific beans
-            KafkaConfig.class,
             ClockDemoProducer.class
         }))
 public class KafkaDemoApplicationTestsConfig {

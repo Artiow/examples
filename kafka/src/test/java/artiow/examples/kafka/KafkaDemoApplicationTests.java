@@ -1,9 +1,9 @@
 package artiow.examples.kafka;
 
 import artiow.examples.kafka.dto.DemoData;
-import artiow.examples.kafka.util.ContainerEvent;
-import artiow.examples.kafka.util.InterceptableContainer;
-import artiow.examples.kafka.util.TestcontainersUtils;
+import artiow.examples.kafka.utils.ContainerEvent;
+import artiow.examples.kafka.utils.InterceptableContainer;
+import artiow.examples.kafka.utils.TestcontainersUtils;
 import java.util.Objects;
 import java.util.UUID;
 import lombok.extern.slf4j.Slf4j;

@@ -1,4 +1,4 @@
-package artiow.examples.kafka.util;
+package artiow.examples.kafka.utils;
 
 import java.util.function.Consumer;
 import java.util.function.Supplier;

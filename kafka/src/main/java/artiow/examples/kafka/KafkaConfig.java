@@ -17,7 +17,7 @@ public class KafkaConfig {
     public NewTopic topic() {
         return TopicBuilder
             .name("kafka-topic-example")
-            .partitions(4)
+            .partitions(8)
             .build();
     }
 
@@ -30,7 +30,7 @@ public class KafkaConfig {
                 log.error(
                     "Record {} skipped because of an exception {} caused by {}",
                     record.toString(),
-                    listenerException,
+                    listenerException.toString(),
                     originException.toString());
             } else {
                 log.error(

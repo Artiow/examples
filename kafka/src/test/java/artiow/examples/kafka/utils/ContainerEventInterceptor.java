@@ -1,4 +1,4 @@
-package artiow.examples.kafka.util;
+package artiow.examples.kafka.utils;
 
 import com.github.dockerjava.api.command.InspectContainerResponse;
 import java.util.function.BiConsumer;

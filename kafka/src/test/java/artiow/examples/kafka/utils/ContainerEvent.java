@@ -1,4 +1,4 @@
-package artiow.examples.kafka.util;
+package artiow.examples.kafka.utils;
 
 public enum ContainerEvent {
 
