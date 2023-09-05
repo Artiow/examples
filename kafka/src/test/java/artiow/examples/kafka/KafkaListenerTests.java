@@ -7,6 +7,7 @@ import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
@@ -30,7 +31,7 @@ public class KafkaListenerTests extends AbstractKafkaTests {
     KafkaListenerService serviceToTest;
 
 
-    public static Set<DemoData> generateDataSet(int limit, Function<DemoData, CompletableFuture<?>> action) {
+    private static Set<DemoData> generateDataSet(int limit, Function<DemoData, CompletableFuture<?>> action) {
         return Stream
             .generate(DemoData::generate)
             .limit(limit)
@@ -42,18 +43,17 @@ public class KafkaListenerTests extends AbstractKafkaTests {
 
     @Test
     void test() {
-        final var set0 = generateDataSet(
-            RND.nextInt(10, 20),
-            data -> kafkaTemplate.send("kafka-topic-example", 0, data.getUuid(), data));
-        final var set1 = generateDataSet(
-            RND.nextInt(10, 20),
-            data -> kafkaTemplate.send("kafka-topic-example", 1, data.getUuid(), data));
+        final var dataSet = IntStream
+            .range(0, 8)
+            .mapToObj(partition -> generateDataSet(
+                RND.nextInt(10, 20),
+                data -> kafkaTemplate.send("kafka-topic-example", partition, data.getUuid(), data)))
+            .toArray(n -> (Set<DemoData>[]) new Set[n]);
 
-        Mockito
-            .verify(serviceToTest, Mockito.timeout(5000).times(set0.size()))
-            .consume(Mockito.argThat(rec -> rec.partition() == 0 && set0.contains(rec.value())));
-        Mockito
-            .verify(serviceToTest, Mockito.timeout(5000).times(set1.size()))
-            .consume(Mockito.argThat(rec -> rec.partition() == 1 && set1.contains(rec.value())));
+        IntStream
+            .range(0, 8)
+            .forEach(partition -> Mockito
+                .verify(serviceToTest, Mockito.timeout(5000).times(dataSet[partition].size()))
+                .consume(Mockito.argThat(rec -> rec.partition() == partition && dataSet[partition].contains(rec.value()))));
     }
 }
