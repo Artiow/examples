@@ -24,7 +24,7 @@ public class ProgrammaticContainersConfig {
         containerBuilder()
             .topic("kafka-topic-example")
             .partitions(1, 3, 5, 7)
-            .listener(kafkaListenerService::listen_programmaticConsumer)
+            .listener(kafkaListenerService::consume)
             .name("programmaticContainer")
             .concurrency(4)
             .buildAndStart();

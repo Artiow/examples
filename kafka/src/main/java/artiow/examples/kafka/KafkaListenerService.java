@@ -15,15 +15,6 @@ public class KafkaListenerService {
     @KafkaListener(
         topicPartitions = {@TopicPartition(topic = "kafka-topic-example", partitions = "0, 2, 4, 6")},
         concurrency = "4")
-    public void listen_annotationDrivenConsumer(ConsumerRecord<Object, Object> rec) {
-        consume(rec);
-    }
-
-    public void listen_programmaticConsumer(ConsumerRecord<Object, Object> rec) {
-        consume(rec);
-    }
-
-
     public void consume(ConsumerRecord<Object, Object> rec) {
         log.info(
             "[partition: {}; offset: {}; timestamp: {}] [key: {}; value: {}]",

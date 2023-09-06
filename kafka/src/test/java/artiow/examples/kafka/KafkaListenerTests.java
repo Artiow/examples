@@ -1,10 +1,12 @@
 package artiow.examples.kafka;
 
 import artiow.examples.kafka.dto.DemoData;
+import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
+import java.util.Collections;
+import java.util.Map.Entry;
 import java.util.Random;
-import java.util.Set;
 import java.util.UUID;
-import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -31,29 +33,30 @@ public class KafkaListenerTests extends AbstractKafkaTests {
     KafkaListenerService serviceToTest;
 
 
-    private static Set<DemoData> generateDataSet(int limit, Function<DemoData, CompletableFuture<?>> action) {
-        return Stream
-            .generate(DemoData::generate)
-            .limit(limit)
-            .parallel()
-            .peek(demoData -> action.apply(demoData).join())
-            .collect(Collectors.toSet());
-    }
-
-
     @Test
     void test() {
-        final var dataSet = IntStream
-            .range(0, 8)
-            .mapToObj(partition -> generateDataSet(
-                RND.nextInt(10, 20),
-                data -> kafkaTemplate.send("kafka-topic-example", partition, data.getUuid(), data)))
-            .toArray(n -> (Set<DemoData>[]) new Set[n]);
-
         IntStream
+            // arrange
             .range(0, 8)
-            .forEach(partition -> Mockito
-                .verify(serviceToTest, Mockito.timeout(5000).times(dataSet[partition].size()))
-                .consume(Mockito.argThat(rec -> rec.partition() == partition && dataSet[partition].contains(rec.value()))));
+            .mapToObj(partition -> Stream
+                .generate(DemoData::generate)
+                .map(data -> Maps.immutableEntry(partition, data))
+                .limit(RND.nextInt(75, 125)))
+            .flatMap(Function.identity())
+            // act
+            .parallel()
+            .peek(dataEntry -> {
+                final var partition = dataEntry.getKey();
+                final var data = dataEntry.getValue();
+                kafkaTemplate.send("kafka-topic-example", partition, data.getUuid(), data).join();
+            })
+            // assert
+            .collect(Collectors.toUnmodifiableMap(
+                Entry::getKey,
+                dataEntry -> Collections.singleton(dataEntry.getValue()),
+                Sets::union))
+            .forEach((partition, dataSet) -> Mockito
+                .verify(serviceToTest, Mockito.timeout(1000).times(dataSet.size()))
+                .consume(Mockito.argThat(rec -> rec.partition() == partition && dataSet.contains(rec.value()))));
     }
 }
