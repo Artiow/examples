@@ -1,0 +1,5 @@
+spring:
+  docker.compose:
+    file: dev/docker-compose.yaml
+    start.command: up
+    stop.command: down
