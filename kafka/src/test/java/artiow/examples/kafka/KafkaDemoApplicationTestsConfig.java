@@ -8,10 +8,12 @@ import org.springframework.context.annotation.FilterType;
 import org.springframework.kafka.config.KafkaListenerEndpointRegistry;
 import org.springframework.kafka.core.ConsumerFactory;
 import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.util.Assert;
 
 @Configuration
 @EnableAutoConfiguration
+@ActiveProfiles("test")
 @ComponentScan(
     excludeFilters = @ComponentScan.Filter(
         type = FilterType.ASSIGNABLE_TYPE,
