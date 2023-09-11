@@ -1,6 +1,9 @@
 spring:
   application.name: kafka-demo-application
+  cloud:
+    zookeeper.connect-string: zookeeper:2181
   kafka:
+    bootstrap-servers: kafka:9092
     properties:
       spring.json.type.mapping: demo-data:artiow.examples.kafka.dto.DemoData
     producer:

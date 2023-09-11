@@ -9,6 +9,8 @@ import java.util.Map.Entry;
 import java.util.Random;
 import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -16,8 +18,12 @@ import java.util.stream.Stream;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 import org.mockito.ArgumentMatcher;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +34,7 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 
 @Slf4j
 @Testcontainers
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @SpringBootTest(classes = KafkaDemoApplicationTestsConfig.class)
 public class KafkaListenerTests extends AbstractKafkaTests {
 
@@ -55,6 +62,37 @@ public class KafkaListenerTests extends AbstractKafkaTests {
         KafkaTestUtils.waitContainerForAssignment("programmaticEndpoint", 4);
     }
 
+
+    @Test
+    @Order(0)
+    void test_single() {
+        // arrange
+        final var testData = DemoData.generate();
+
+        // act
+        final var partition = new AtomicInteger(0);
+        final var offset = new AtomicLong(0);
+        kafkaTemplate
+            .send(TOPIC, testData.getUuid(), testData)
+            .thenAccept(sendResult -> {
+                Assertions.assertNotNull(sendResult);
+                final var producedRecord = sendResult.getProducerRecord();
+                Assertions.assertNotNull(producedRecord);
+                Assertions.assertEquals(TOPIC, producedRecord.topic());
+                Assertions.assertSame(testData.getUuid(), producedRecord.key());
+                Assertions.assertSame(testData, producedRecord.value());
+                final var recordMetadata = sendResult.getRecordMetadata();
+                Assertions.assertNotNull(recordMetadata);
+                partition.set(recordMetadata.partition());
+                offset.set(recordMetadata.offset());
+            })
+            .join();
+
+        // assert
+        Mockito
+            .verify(serviceToTest, Mockito.timeout(1000).times(1))
+            .consume(Mockito.argThat(new ConsumerRecordMatcher<>(partition.get(), Collections.singleton(testData))));
+    }
 
     @Test
     void test_distinct() {
