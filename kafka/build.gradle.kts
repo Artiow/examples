@@ -25,8 +25,12 @@ extra["springCloudVersion"] = "2022.0.4"
 
 dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-web")
+	implementation("org.springframework.boot:spring-boot-actuator-autoconfigure")
 	implementation("org.springframework.cloud:spring-cloud-starter-zookeeper-discovery")
 	implementation("org.springframework.kafka:spring-kafka")
+	implementation("io.micrometer:micrometer-tracing")
+	implementation("io.micrometer:micrometer-tracing-bridge-brave")
+	implementation("io.zipkin.brave:brave-instrumentation-kafka-clients")
 	implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310")
 	developmentOnly("org.springframework.boot:spring-boot-docker-compose")
 	compileOnly("org.projectlombok:lombok")
