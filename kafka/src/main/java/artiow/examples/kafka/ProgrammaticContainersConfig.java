@@ -18,7 +18,7 @@ public class ProgrammaticContainersConfig implements KafkaListenerConfigurer {
             .builder()
             .id("programmaticEndpoint")
             .topics("kafka-topic-example")
-            .messageListener(kafkaListenerService::consume)
+            .messageListener(kafkaListenerService::consumeTick)
             .concurrency(4)
             .build());
     }

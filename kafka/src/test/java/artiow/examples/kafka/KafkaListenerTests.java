@@ -91,7 +91,7 @@ public class KafkaListenerTests extends AbstractKafkaTests {
         // assert
         Mockito
             .verify(serviceToTest, Mockito.timeout(1000).times(1))
-            .consume(Mockito.argThat(new ConsumerRecordMatcher<>(partition.get(), Collections.singleton(testData))));
+            .consumeTick(Mockito.argThat(new ConsumerRecordMatcher<>(partition.get(), Collections.singleton(testData))));
     }
 
     @Test
@@ -118,7 +118,7 @@ public class KafkaListenerTests extends AbstractKafkaTests {
                 Sets::union))
             .forEach((partition, dataSet) -> Mockito
                 .verify(serviceToTest, Mockito.timeout(1000).times(dataSet.size()))
-                .consume(Mockito.argThat(new ConsumerRecordMatcher<>(partition, dataSet))));
+                .consumeTick(Mockito.argThat(new ConsumerRecordMatcher<>(partition, dataSet))));
     }
 
     @Test
@@ -135,7 +135,7 @@ public class KafkaListenerTests extends AbstractKafkaTests {
         // assert
         Mockito
             .verify(serviceToTest, Mockito.timeout(1000).times(dataSet.size()))
-            .consume(Mockito.argThat(new ConsumerRecordMatcher<>(dataSet)));
+            .consumeTick(Mockito.argThat(new ConsumerRecordMatcher<>(dataSet)));
     }
 
 
