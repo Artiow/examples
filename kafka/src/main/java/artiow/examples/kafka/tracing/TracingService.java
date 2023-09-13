@@ -3,21 +3,19 @@ package artiow.examples.kafka.tracing;
 import brave.kafka.clients.KafkaTracing;
 import io.micrometer.tracing.Tracer;
 import io.micrometer.tracing.brave.bridge.BraveSpan;
-import jakarta.annotation.PostConstruct;
-import lombok.RequiredArgsConstructor;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.springframework.stereotype.Service;
 
 @Service
-@RequiredArgsConstructor
 public class TracingService {
 
     private final Tracer tracer;
     private final KafkaTracing kafkaTracing;
 
 
-    @PostConstruct
-    private void init() {
+    public TracingService(Tracer tracer, KafkaTracing kafkaTracing) {
+        this.tracer = tracer;
+        this.kafkaTracing = kafkaTracing;
         TracingUtils.setService(this);
     }
 

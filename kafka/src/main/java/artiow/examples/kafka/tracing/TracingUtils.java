@@ -1,5 +1,6 @@
 package artiow.examples.kafka.tracing;
 
+import java.util.concurrent.atomic.AtomicReference;
 import lombok.experimental.UtilityClass;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.springframework.util.Assert;
@@ -7,7 +8,7 @@ import org.springframework.util.Assert;
 @UtilityClass
 public class TracingUtils {
 
-    private static TracingService service;
+    private static final AtomicReference<TracingService> SERVICE = new AtomicReference<>();
 
 
     public static AutocloseableSpan withNextSpan(String name) {
@@ -19,11 +20,12 @@ public class TracingUtils {
     }
 
     static void setService(TracingService service) {
-        TracingUtils.service = service;
+        TracingUtils.SERVICE.compareAndSet(null, service);
     }
 
     private static TracingService service() {
-        Assert.state(service != null, () -> "No bean of type " + TracingService.class + " provided.");
+        final var service = SERVICE.get();
+        Assert.state(service != null, () -> "No bean of type " + TracingService.class + " provided");
         return service;
     }
 }

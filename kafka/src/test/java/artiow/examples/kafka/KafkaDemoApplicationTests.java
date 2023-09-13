@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.test.autoconfigure.actuate.observability.AutoConfigureObservability;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.cloud.client.discovery.DiscoveryClient;
@@ -15,6 +16,7 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 
 @Slf4j
 @Testcontainers
+@AutoConfigureObservability
 @SpringBootTest(classes = KafkaDemoApplicationTestsConfig.class, webEnvironment = WebEnvironment.RANDOM_PORT)
 class KafkaDemoApplicationTests extends AbstractKafkaTests {
 

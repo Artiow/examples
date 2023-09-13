@@ -27,6 +27,7 @@ import org.junit.jupiter.api.TestMethodOrder;
 import org.mockito.ArgumentMatcher;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.actuate.observability.AutoConfigureObservability;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.kafka.core.KafkaTemplate;
@@ -34,6 +35,7 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 
 @Slf4j
 @Testcontainers
+@AutoConfigureObservability
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @SpringBootTest(classes = KafkaDemoApplicationTestsConfig.class)
 public class KafkaListenerTests extends AbstractKafkaTests {
