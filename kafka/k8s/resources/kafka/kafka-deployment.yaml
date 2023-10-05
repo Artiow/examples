@@ -1,0 +1,49 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kafka-deployment
+  labels:
+    app: kafka
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: kafka
+  template:
+    metadata:
+      labels:
+        app: kafka
+    spec:
+      containers:
+        - name: kafka
+          image: bitnami/kafka
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 9092
+          env:
+            - name: KAFKA_CFG_LISTENERS
+              valueFrom:
+                configMapKeyRef:
+                  name: kafka-config
+                  key: kafka-listeners
+            - name: KAFKA_CFG_ADVERTISED_LISTENERS
+              valueFrom:
+                configMapKeyRef:
+                  name: kafka-config
+                  key: kafka-advertised-listeners
+#            - name: KAFKA_CFG_INTER_BROKER_LISTENER_NAME
+#              valueFrom:
+#                configMapKeyRef:
+#                  name: kafka-config
+#                  key: kafka-internal-listener
+#            - name: KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP
+#              valueFrom:
+#                configMapKeyRef:
+#                  name: kafka-config
+#                  key: kafka-protocol-map
+            - name: KAFKA_CFG_ZOOKEEPER_CONNECT
+              valueFrom:
+                configMapKeyRef:
+                  name: zookeeper-config
+                  key: zookeeper-url
+      hostname: kafka-service

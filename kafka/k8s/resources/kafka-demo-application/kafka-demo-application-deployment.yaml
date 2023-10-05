@@ -19,8 +19,8 @@ spec:
           image: artiow/examples/kafka-demo-application:snapshot
           imagePullPolicy: IfNotPresent
           args: [
-            "--spring.cloud.zookeeper.connect-string=${ZOOKEEPER_URL}",
-            "--spring.kafka.bootstrap-servers=${KAFKA_URL}"
+            "--spring.cloud.zookeeper.connect-string=${ZOOKEEPER_URL}:2181",
+            "--spring.kafka.bootstrap-servers=${KAFKA_URL}:9092"
           ]
           ports:
             - containerPort: 8080

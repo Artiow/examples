@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: kafka-config
+data:
+  kafka-url: kafka-service
+  kafka-listeners: PLAINTEXT://:9092
+  kafka-advertised-listeners: PLAINTEXT://kafka-service:9092
+#  kafka-listeners: INTERNAL://:49092,EXTERNAL://:9092
+#  kafka-advertised-listeners: INTERNAL://kafka-local:49092,EXTERNAL://kafka-service:9092
+#  kafka-internal-listener: INTERNAL
+#  kafka-protocol-map: INTERNAL:PLAINTEXT,EXTERNAL:PLAINTEXT
