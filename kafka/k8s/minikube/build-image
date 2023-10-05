@@ -1,0 +1,2 @@
+#!/bin/sh
+minikube image build -t artiow/examples/kafka-demo-application:snapshot /home/artiow/IdeaProjects/examples/kafka
