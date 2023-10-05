@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: zookeeper-deployment
+  labels:
+    app: zookeeper
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: zookeeper
+  template:
+    metadata:
+      labels:
+        app: zookeeper
+    spec:
+      containers:
+        - name: zookeeper
+          image: zookeeper
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 2181
+          volumeMounts:
+            - mountPath: /data
+              name: data-volume
+            - mountPath: /datalog
+              name: datalog-volume
+            - mountPath: /logs
+              name: logs-volume
+      volumes:
+        - name: data-volume
+          emptyDir: {}
+        - name: datalog-volume
+          emptyDir: {}
+        - name: logs-volume
+          emptyDir: {}
