@@ -31,6 +31,7 @@ dependencies {
     implementation("io.micrometer:micrometer-tracing")
     implementation("io.micrometer:micrometer-tracing-bridge-brave")
     implementation("io.zipkin.brave:brave-instrumentation-kafka-clients")
+    implementation("io.zipkin.reporter2:zipkin-reporter-brave")
     implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310")
     developmentOnly("org.springframework.boot:spring-boot-docker-compose")
     compileOnly("org.projectlombok:lombok")
