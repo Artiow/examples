@@ -3,4 +3,5 @@ kind: ConfigMap
 metadata:
   name: zookeeper-config
 data:
-  zookeeper-url: zookeeper-service
+  zookeeper-host: zookeeper-service
+  zookeeper-port: "2181"

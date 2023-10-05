@@ -21,29 +21,44 @@ spec:
           ports:
             - containerPort: 9092
           env:
+            - name: KAFKA_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: kafka-config
+                  key: kafka-host
+            - name: KAFKA_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: kafka-config
+                  key: kafka-port
+            - name: KAFKA_INTERNAL_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: kafka-config
+                  key: kafka-internal-host
+            - name: KAFKA_INTERNAL_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: kafka-config
+                  key: kafka-internal-port
             - name: KAFKA_CFG_LISTENERS
-              valueFrom:
-                configMapKeyRef:
-                  name: kafka-config
-                  key: kafka-listeners
+              value: INTERNAL://:$(KAFKA_INTERNAL_PORT),EXTERNAL://:$(KAFKA_PORT)
             - name: KAFKA_CFG_ADVERTISED_LISTENERS
-              valueFrom:
-                configMapKeyRef:
-                  name: kafka-config
-                  key: kafka-advertised-listeners
-#            - name: KAFKA_CFG_INTER_BROKER_LISTENER_NAME
-#              valueFrom:
-#                configMapKeyRef:
-#                  name: kafka-config
-#                  key: kafka-internal-listener
-#            - name: KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP
-#              valueFrom:
-#                configMapKeyRef:
-#                  name: kafka-config
-#                  key: kafka-protocol-map
-            - name: KAFKA_CFG_ZOOKEEPER_CONNECT
+              value: INTERNAL://$(KAFKA_INTERNAL_HOST):$(KAFKA_INTERNAL_PORT),EXTERNAL://$(KAFKA_HOST):$(KAFKA_PORT)
+            - name: KAFKA_CFG_INTER_BROKER_LISTENER_NAME
+              value: INTERNAL
+            - name: KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP
+              value: INTERNAL:PLAINTEXT,EXTERNAL:PLAINTEXT
+            - name: ZOOKEEPER_HOST
               valueFrom:
                 configMapKeyRef:
                   name: zookeeper-config
-                  key: zookeeper-url
-      hostname: kafka-service
+                  key: zookeeper-host
+            - name: ZOOKEEPER_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: zookeeper-config
+                  key: zookeeper-port
+            - name: KAFKA_CFG_ZOOKEEPER_CONNECT
+              value: $(ZOOKEEPER_HOST):$(ZOOKEEPER_PORT)
+      hostname: kafka-internal
