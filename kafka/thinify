@@ -1,0 +1,36 @@
+#!/bin/sh
+
+#  usage:
+# thinify <target jar> <target java version number> <built jre output path>
+#  usage example:
+# thinify ./build/libs/app.jar 17 ./build/runtime
+
+jarfile=$1;
+version=$2;
+output=$3;
+
+jardir="${jarfile%.*}"
+echo "unzip unpackaging into $jardir from $jarfile file..."
+unzip "$jarfile" -d "$jardir"
+libdir="$jardir/BOOT-INF/lib/*"
+echo "jdeps analyzing..."
+modules=$("$JAVA_HOME"/bin/jdeps \
+  --recursive \
+  --print-module-deps \
+  --ignore-missing-deps \
+  --multi-release "$version" \
+  --class-path="$libdir" \
+  --module-path="$libdir" \
+  "$jarfile")
+echo "jdeps found next moules: $modules"
+rm -Rf "$jardir"
+
+echo "jlink assembling into $output using found modules..."
+"$JAVA_HOME"/bin/jlink \
+    --verbose \
+    --add-modules "$modules" \
+    --strip-debug \
+    --no-man-pages \
+    --no-header-files \
+    --compress=2 \
+    --output "$output"
